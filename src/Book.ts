@@ -23,6 +23,7 @@ export class Book {
 	rating: number;
 	avgRating: number;
 	shelves: string;
+	exclusiveShelve: string;
 	dateAdded: string;
 	dateRead: string;
 	datePublished: string;
@@ -45,6 +46,7 @@ export class Book {
 		this.datePublished = this.parseDate(book.book_published);
 		this.cover = book.image_url;
 		this.shelves = this.getShelves(book.user_shelves, this.dateRead);
+		this.exclusiveShelve = this.shelves.split(',').find(v => ['read', 'to-read', 'currently-reading'].includes(v)) || ''
 	}
 
 	public getTitle(): string {

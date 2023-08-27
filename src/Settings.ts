@@ -195,6 +195,7 @@ export class Settings extends PluginSettingTab {
 						`${this.getDisplay("datePublished")}`
 					)
 					.addOption("shelves", `${this.getDisplay("shelves")}`)
+					.addOption("exclusiveShelves", `${this.getDisplay("exclusiveShelves")}`)
 					.onChange(async (value: string) => {
 						this.optionIsSelected(value)
 							? delete this.currentYAML[value]
