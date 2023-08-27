@@ -14,6 +14,7 @@ export class Book {
 	rawTitle: string;
 	fullTitle: string;
 	series: string;
+	cleanSeries: string;
 	subtitle: string;
 	description: string;
 	author: string;
@@ -67,7 +68,7 @@ export class Book {
 		return turndownService.turndown(html)
 	}
 
-	private getShelves(shelves: string, dateRead: string) : string {
+	private getShelves(shelves: string, dateRead: string): string {
 		// Goodreads doesn't send a shelf value for books on the read shelf.
 		// Infer from either a missing shelf value, or a set dateRead.
 		// Check for presence of read first in case Goodreads decides to include it.
@@ -109,6 +110,7 @@ export class Book {
 
 	private cleanTitle(title: string, full: boolean) {
 		this.series = "";
+		this.cleanSeries = "";
 		this.subtitle = "";
 		let series = "";
 
@@ -127,15 +129,29 @@ export class Book {
 		}
 
 		// replace remaining special characters with an empty character
-		title = title.replace(/[&\/\\#,+()$~%.'":*?<>{}|]/g,'');
+		title = title.replace(/[&\/\\#,+()$~%.'":*?<>{}|]/g, '');
 
 		return title.trim();
 	}
 
 	private getSeries(title: string): string {
+		function trim(str: string, ch: string) {
+			let start = 0,
+				end = str.length;
+
+			while (start < end && str[start] === ch)
+				++start;
+
+			while (end > start && str[end - 1] === ch)
+				--end;
+
+			return (start > 0 || end < str.length) ? str.substring(start, end) : str;
+		}
 		const match = title.match(/\((.*?)\)/);
 		if (match && match[1].contains("#")) {
 			this.series = match[1].trim();
+			this.cleanSeries = trim(this.series.substring(0, this.series.lastIndexOf("#")).trim(), ',');
+
 			return match[0];
 		}
 		return "";
